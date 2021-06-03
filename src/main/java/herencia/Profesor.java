@@ -9,6 +9,34 @@ package herencia;
  *
  * @author imad
  */
-public class Profesor {
-    
+public abstract class Profesor extends Persona {
+
+    private String idProfesor;
+
+    public Profesor() {
+        // Implícitamente está llamando a super();
+
+    }
+
+    public Profesor(String idProfesor, String nombre, String apellido, String direccion, int edad) {
+        super(nombre, apellido, direccion, edad);
+        this.idProfesor = idProfesor;
+    }
+
+    public String getIdProfesor() {
+        return idProfesor;
+    }
+
+    public void setIdProfesor(String idProfesor) {
+        this.idProfesor = idProfesor;
+    }
+
+    @Override
+    public String toString() {
+        //sobrescribe este método usando el método toString de Persona
+        return super.toString() + " Id profesor: " + idProfesor;
+    }
+
+    //método abstracto llamado importeNomina(double sueldoBase) que devuelve un double.
+    public abstract double importeNomina(double sueldoBase);
 }

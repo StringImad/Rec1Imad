@@ -46,7 +46,7 @@ public class MatrizLetras {
     }
 //Este metodo utiliza  el método sort de la clase Arrays, que está en el paquete 
     //java.util que se encargará de ordenar cualquier tipo de array que le pasemos como argumento.
-
+    //El modo de ordenación por defecto responde a la posición del valor de acuerdo a su valor Unicode
     public void ordenar() {
         for (int i = 0; i < matriz.length; i++) {
             Arrays.sort(matriz[i]);
@@ -68,11 +68,14 @@ public class MatrizLetras {
         int letraX = x;
         for (int i = 0; i < matriz.length; i++) {
             for (int j = 0; j < matriz[i].length; j++) {
+                //si la letra que esta almacenada en la fila [i][j] es igual a letra que hemos pasado por parametro
                 if (matriz[i][j] == letraX) {
+                    //el contador suma 
                     contador++;
                 }
             }
         }
+        //devolvemos el contador despúes de todas las interacciones 
         return contador;
     }
 
@@ -87,10 +90,16 @@ public class MatrizLetras {
             //en cada interaccion del bucle se va restando una posicion del array
             hacerMonticulo(arrayRecibido, nodo, numero - 1);
         }
+        
+        //nodo es la ultima posicion del array 
         for (int nodo = numero - 1; nodo >= 0; nodo--) {
+            //Se almacena en la variable temporal la posicion 0 del array recibido 
             int tmp = arrayRecibido[0];
+            //en el array 0 recibimos el array con la ultima posicion 
             arrayRecibido[0] = arrayRecibido[nodo];
+          //  el array con la ultima posicion es igual a la poscion 0 
             arrayRecibido[nodo] = tmp;
+            //
             hacerMonticulo(arrayRecibido, 0, nodo - 1);
         }
     }
@@ -102,7 +111,7 @@ public class MatrizLetras {
         //variable derecha  se refiere a la segunda mitad del array
         int der = izq + 1;
         int mayor;
-        //Si la parte izquierda es mayo 
+        //Si la parte izquierda es mayor
         if (izq > fin) {
             return;
         }
