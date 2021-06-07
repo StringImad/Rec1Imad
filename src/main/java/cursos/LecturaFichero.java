@@ -89,20 +89,19 @@ public class LecturaFichero {
         }
 //    
         //ESCRITURA
-             String idFichero2 = "CursosAcabados.txt";
-             
-          try {
+        String idFichero2 = "CursosAcabados.txt";
+
+        try {
             BufferedWriter flujo = new BufferedWriter(new FileWriter(idFichero2));
 
             flujo.write("Titulo Curso\t Fecha fin\t");
             flujo.newLine();
 
             for (ActividadesFormativas lib : listaActividadesFormativas) {
-                do{
-                    flujo.write(( lib).getTitulo()+"\t"+(lib).getFechaFin());
+                if ((lib).getFechaFin().isBefore(LocalDate.of(2020, Month.APRIL, 1))) {
+                    flujo.write((lib).getTitulo() + "\t" + (lib).getFechaFin());
                     flujo.newLine();
-
-                }while((lib).getFechaFin().isBefore(LocalDate.of(2020, Month.APRIL, 1)));
+                }
 
             }
 
@@ -114,8 +113,6 @@ public class LecturaFichero {
         } catch (IOException e) {
             System.out.println(e.getMessage());
         }
-        
-        
 
     }
 }
