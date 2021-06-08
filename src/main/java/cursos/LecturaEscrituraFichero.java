@@ -5,11 +5,8 @@
  */
 package cursos;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -22,7 +19,6 @@ import java.time.LocalDate;
 import java.time.Month;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.Scanner;
 import java.util.logging.Level;
@@ -45,59 +41,36 @@ public class LecturaEscrituraFichero {
 
         leerFicheroCsv(listaActividadesFormativas, idFichero);
 
-//        Collections.sort(listaActividadesFormativas);
-//        ArrayList<String> listaActivJson = new ArrayList<>();
-//
-//        Comparator<ActividadesFormativas> criterio = (p1, p2) -> p1.getTitulo().compareTo(p2.getTitulo());
-//        Collections.sort(listaActividadesFormativas, criterio);
         System.out.println("--------------Lista imprimida de todos los cursos--------------");
         for (ActividadesFormativas token : listaActividadesFormativas) {
             System.out.println(token);
         }
 //    
+
+        //Lista ordenanda por api stream
+        ordenarPorApiStream(listaActividadesFormativas);
         //ESCRITURA
         String idFichero2 = "CursosAcabados.txt";
         escribirFicheroTxt(listaActividadesFormativas, idFichero2);
-        System.out.println("--------------Generando fichero JSON-------------------");
 
         //LECTURA FICHERO TXT
         System.out.println("----------------------Leyendo fichero txt-----------------------");
         leerFicheroTxt();
 
-        //GENERAR JSON Y LEER OTRAVEZ
+        //GENERAR JSON 
         System.out.println("---------------------------generando fichero JSON-------------------------------");
-
         generarFicheroJSON(escribirFicheroTxt(listaActividadesFormativas, idFichero2));
-
-        //     leerFicheroJSON("CursosAcabados.JSON");
-        // leerFicheroJSON();
-        // leerJSON();
+        //ArrayList que copia la lista que recibe del metodo JSON, es generada a partir de los datos que hay insertados en 
+        //al leer el fichero JSON 
         ArrayList<ActividadesFormativasAcabadas> listaLeerActividades = leerJSON("cursosAcabados.JSON");
-
+//Bucle que imprime la lista y muestra por pantalla el resultado
         for (int i = 0; i < listaLeerActividades.size(); i++) {
-            System.out.println(" iidhius");
             System.out.println(listaLeerActividades.get(i));
-            ;
+
         }
-//        for (ActividadesFormativasAcabadas listaLeerActividade : listaLeerActividades) {
-//            System.out.println("bucle");
-//            System.out.println(listaLeerActividade);
-//        }
-//        ActividadesFormativasAcabadas activ = leerJsonUnico();
-//
-////        
-//        for (int i = 0; i < listaLeerActividades.size(); i++) {
-//            System.out.println(activ.toString());
-//
-//        }
 
-//               for (ActividadesFormativasAcabadas listaLeerActividade : listaLeerActividades) {
-//                    System.out.println(activ.toString());
-//                    System.out.println(listaLeerActividade);
-//
-//        }
     }
-
+//Metodo para leer el fichero CSV, recibe un arrayList de objetos ActividadesFormativas y el nombre del fichero
     public static void leerFicheroCsv(ArrayList<ActividadesFormativas> listaActividadesFormativas, String idFichero) {
         String[] tokens;
         String linea;
@@ -107,7 +80,7 @@ public class LecturaEscrituraFichero {
         // Inicialización del flujo "datosFichero" en función del archivo llamado "idFichero"
         // Estructura try-with-resources. Permite cerrar los recursos una vez finalizadas
         // las operaciones con el archivo
-        try ( Scanner datosFichero = new Scanner(new File(idFichero), "UTF-8")) {
+        try (Scanner datosFichero = new Scanner(new File(idFichero), "UTF-8")) {
             // hasNextLine devuelve true mientras haya líneas por leer
             //Omitimos las primeras 5 lineas
             for (int i = 0; i < 5; i++) {
@@ -144,16 +117,15 @@ public class LecturaEscrituraFichero {
             System.out.println(e.getMessage());
         }
     }
-
+//metodo para escribir fichero TXT recibe una lista y el nombre del fichero
     public static ArrayList escribirFicheroTxt(ArrayList<ActividadesFormativas> listaActividadesFormativasAcabadas, String idFichero2) {
+        //ArrayList preparado para meter los datos para leer el JSON
         ArrayList<ActividadesFormativasAcabadas> listaActivJsonAcab = new ArrayList<>();
         System.out.println("---------------Escribiendo fichero TXT-------------------------");
         try {
             BufferedWriter flujo = new BufferedWriter(new FileWriter(idFichero2));
             String cabecera = ("Titulo Curso\t Fecha fin\t");
             flujo.write(cabecera);
-            // listaActivJson.add(cabecera);
-
             flujo.newLine();
             String intento = "";
             for (ActividadesFormativas lib : listaActividadesFormativasAcabadas) {
@@ -161,7 +133,7 @@ public class LecturaEscrituraFichero {
 
                     flujo.write((lib).getTitulo() + "\t" + (lib).getFechaFin());
                     flujo.newLine();
-
+                    //Creamos un obejto de tipo ActividadesFormativasAcabadas, solo contiene dos atributos que son los que necesitamos 
                     ActividadesFormativasAcabadas objeto = new ActividadesFormativasAcabadas((lib).getTitulo(), (lib).getFechaFin());
 
                     listaActivJsonAcab.add(objeto);
@@ -195,7 +167,7 @@ public class LecturaEscrituraFichero {
             //un constructor new File con el idFichero que pasamos anteriormente
             //y la lista de donde sacará los objetos en cuestión
             System.out.println("------------------generando 1");
-            mapeador.writeValue(new File("cursosAcabados.JSON"), lista);
+            mapeador.writeValue(new File("CursosAcabados.JSON"), lista);
             System.out.println("Archivo JSON creado correctamente");
         } catch (IOException ex) {
             Logger.getLogger(LecturaEscrituraFichero.class.getName()).log(Level.SEVERE, null, ex);
@@ -205,7 +177,6 @@ public class LecturaEscrituraFichero {
     }
 
     public static void leerFicheroTxt() {
-        // ArrayList<ActividadesFormativas> listaActividadesFormativasAcabadas = new ArrayList<>();
         File archivo = null;
         FileReader fr = null;
         BufferedReader br = null;
@@ -222,10 +193,6 @@ public class LecturaEscrituraFichero {
             String linea;
             while ((linea = br.readLine()) != null) {
                 System.out.println(linea);
-//                for (ActividadesFormativas listaActividadesFormativasAcabada : listaActividadesFormativasAcabadas) {
-//                    listaActividadesFormativasAcabadas.add(listaActividadesFormativasAcabada);
-//
-//                }
 
             }
 
@@ -245,43 +212,14 @@ public class LecturaEscrituraFichero {
         }
     }
 
-//    public static ArrayList leerFicheroJSON(String ruta) throws IOException {
-//        ObjectMapper mapeador = new ObjectMapper();
-//        
-//        System.out.println("--------------------1------------");
-//        ArrayList<ActividadesFormativasAcabadas> listaActividadesFormativas = mapeador.readValue(new File(ruta),
-//                mapeador.getTypeFactory().constructCollectionType(ArrayList.class, ActividadesFormativasAcabadas.class));
-//        System.out.println("-------------------2----------------");
-//        for (ActividadesFormativasAcabadas lista : listaActividadesFormativas) {
-//            System.out.println(lista);
-//        }
-//
-//        return listaActividadesFormativas;
-//
-//    }
-//    
-    public static ArrayList leerFicheroJSON() throws IOException {
-        ObjectMapper mapeador = new ObjectMapper();
-
-        System.out.println("--------------------1------------");
-        ArrayList<ActividadesFormativasAcabadas> listaActividadesFormativas = mapeador.readValue(new File("CursosAcabados.JSON"),
-                mapeador.getTypeFactory().constructCollectionType(ArrayList.class, ActividadesFormativasAcabadas.class));
-        System.out.println("-------------------2----------------");
-        for (ActividadesFormativasAcabadas lista : listaActividadesFormativas) {
-            System.out.println(lista);
-        }
-
-        return listaActividadesFormativas;
-
-    }
 
     public static ArrayList leerJSON(String idFichero) {
-        System.out.println("-----------Intentando leer JSON RECIBIENDO ARRAYLIST-------------");
+        System.out.println("----------------------------Leyendo fichero  JSON---------------------------------------");
         ArrayList<ActividadesFormativasAcabadas> listaActividadesFormativas = new ArrayList<>();
 
         try {
             ObjectMapper mapeador = new ObjectMapper();
-
+            //vamos guardando en la lista lo que vamos leyendo del archivo llamado idFichero
             listaActividadesFormativas = mapeador.readValue(new File(idFichero),
                     mapeador.getTypeFactory().constructCollectionType(ArrayList.class, ActividadesFormativasAcabadas.class));
 
@@ -292,27 +230,20 @@ public class LecturaEscrituraFichero {
         return listaActividadesFormativas;
     }
 
-    public static ArrayList ordenarPorApiStream() {
-        ArrayList<ActividadesFormativas> listaActividadesFormativas = new ArrayList<>();
-        listaActividadesFormativas.stream()
-                .sorted((c1, c2) -> c1.getFechaInicio().compareTo(c2.getFechaInicio()))
-                .sorted((d1, d2) -> d1.getTitulo().compareTo(d2.getTitulo()));
+    public static void ordenarPorApiStream(ArrayList<ActividadesFormativas> lista) {
+        System.out.println("-------------------ORDENACION POR APISTREAM---------------------------------");
+        //                  //se ordena la lista por fecha y luego por titulo
+//                //se usa el thencompairing
+        Comparator<ActividadesFormativas> listaActividadesFormativas
+                = Comparator.comparing(ActividadesFormativas::getFechaInicio).thenComparing(Comparator.comparing(ActividadesFormativas::getTitulo));
+        lista.stream().sorted(listaActividadesFormativas).forEach(System.out::println);
 
-        return listaActividadesFormativas;
+//
+//                  //se ordena la lista por fecha y luego por titulo
+//                //se usa el thencompairing
+//       Comparator<ActividadesFormativas> porFecha = (c1, c2) -> c1.getFechaInicio().compareTo(c2.getFechaInicio());
+//                Comparator<ActividadesFormativas> porTitulo = (d1, d2) -> d1.getTitulo().compareTo(d2.getTitulo());
+//                Collections.sort(listaActividadesFormativas, porFecha.thenComparing(porTitulo));
     }
 
-    public static ActividadesFormativasAcabadas leerJsonUnico() {
-        System.out.println("INTENTANDO LEER JSON OBJETO");
-        ActividadesFormativasAcabadas activ = new ActividadesFormativasAcabadas();
-
-        try {
-            ObjectMapper mapeador = new ObjectMapper();
-
-            activ = mapeador.readValue(new File("cursosAcabados.JSON"), ActividadesFormativasAcabadas.class);
-        } catch (IOException ex) {
-            System.out.println("Archivo no encontrado");
-        }
-
-        return activ;
-    }
 }

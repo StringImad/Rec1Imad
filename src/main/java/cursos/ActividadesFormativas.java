@@ -5,6 +5,11 @@
  */
 package cursos;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import java.time.LocalDate;
 import java.util.Objects;
 
@@ -18,6 +23,13 @@ public class ActividadesFormativas implements Comparable <ActividadesFormativas>
     private String titulo;
     private String modalidad;
     private String estado;
+     //Anotaciones json para que al leer los mismo salga el correcto formato
+    //no me hacen falta las clases serializadora y deserializadora ya que los
+    //importo a traves de las dependencias en el pom.xml y el jsonformat
+    //le da la forma correcta y el patron para que funcione
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
+    @JsonDeserialize(using = LocalDateDeserializer.class)
+    @JsonSerialize(using = LocalDateSerializer.class)
     private LocalDate fechaInicio;
     private LocalDate fechaFin;
     private String dirigidoA;
